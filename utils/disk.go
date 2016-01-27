@@ -53,7 +53,7 @@ func RemoveDir() error {
 	return os.RemoveAll(path)
 }
 
-func CreateDisk(sshKey string, size int) error {
+func CreateDisk(sshKey string) error {
 	if strings.Contains(sshKey, "$HOME") {
 		username := os.Getenv("SUDO_USER")
 		if username == "" {
@@ -101,6 +101,4 @@ func CreateDisk(sshKey string, size int) error {
 	if err = tarball.Close(); err != nil {
 		return err
 	}
-
-	return 0
 }
