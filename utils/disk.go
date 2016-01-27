@@ -102,27 +102,5 @@ func CreateDisk(sshKey string, size int) error {
 		return err
 	}
 
-	path := os.ExpandEnv("$HOME/.dlite/disk.img")
-	f, err := os.Create(path)
-	if err != nil {
-		return err
-	}
-
-	defer f.Close()
-	_, err = f.Write(buffer.Bytes())
-	if err != nil {
-		return err
-	}
-
-	_, err = f.Seek(int64(size*1073741824-1), 0)
-	if err != nil {
-		return err
-	}
-
-	_, err = f.Write([]byte{0})
-	if err != nil {
-		return err
-	}
-
-	return changePermissions(path)
+	return 0
 }

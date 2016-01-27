@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/TheNewNormal/libxhyve"
+	"github.com/dunkelstern/libxhyve"
 )
 
 func StartVM(config Config) chan error {
@@ -19,7 +19,7 @@ func StartVM(config Config) chan error {
 			"-l", "com1,autopty",
 			"-s", "31,lpc",
 			"-s", "2:0,virtio-net",
-			"-s", "4,virtio-blk," + os.ExpandEnv("$HOME/.dlite/disk.img"),
+			"-s", fmt.Sprintf("4,virtio-blk,size=%dG,split=1G,sparse,%s", config.DiskSize, os.ExpandEnv("$HOME/.dlite/disk.img")),
 			"-U", config.Uuid,
 			"-f", fmt.Sprintf("kexec,%s,%s,%s", os.ExpandEnv("$HOME/.dlite/bzImage"), os.ExpandEnv("$HOME/.dlite/rootfs.cpio.xz"), "console=ttyS0 hostname=dlite uuid="+config.Uuid),
 		}
