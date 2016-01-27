@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/nlf/dlite/utils"
+	"github.com/dunkelstern/dlite/utils"
 	"github.com/satori/go.uuid"
 )
 
@@ -23,7 +23,7 @@ func (c *InstallCommand) Execute(args []string) error {
 
 	fmap := utils.FunctionMap{}
 	fmap["Building disk image"] = func() error {
-		return utils.CreateDisk(c.SSHKey, c.Disk)
+		return utils.CreateDisk(c.SSHKey)
 	}
 
 	fmap["Downloading OS"] = func() error {
@@ -44,6 +44,7 @@ func (c *InstallCommand) Execute(args []string) error {
 			CpuCount: c.Cpus,
 			Memory: c.Memory,
 			Hostname: c.Hostname,
+			DiskSize: c.Disk,
 		})
 	}
 

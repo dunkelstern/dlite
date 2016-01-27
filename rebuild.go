@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/nlf/dlite/utils"
+	"github.com/dunkelstern/dlite/utils"
 )
 
 type RebuildCommand struct {
@@ -12,7 +12,7 @@ type RebuildCommand struct {
 func (c *RebuildCommand) Execute(args []string) error {
 	fmap := utils.FunctionMap{}
 	fmap["Rebuilding disk image"] = func() error {
-		return utils.CreateDisk(c.SSHKey, c.Disk)
+		return utils.CreateDisk(c.SSHKey)
 	}
 
 	return utils.Spin(fmap)
