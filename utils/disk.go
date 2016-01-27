@@ -101,4 +101,6 @@ func CreateDisk(sshKey string) error {
 	if err = tarball.Close(); err != nil {
 		return err
 	}
+	
+	return
 }
