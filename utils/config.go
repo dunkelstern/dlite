@@ -11,6 +11,7 @@ type Config struct {
 	Memory   int    `json:"memory"`
 	Hostname string `json:"hostname"`
 	DiskSize int    `json:"disk_size"`
+	Share    string `json:"share"`
 }
 
 func SaveConfig(config Config) error {
