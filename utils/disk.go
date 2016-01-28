@@ -10,7 +10,6 @@ import (
 	"os/user"
 	"strconv"
 	"strings"
-	"fmt"
 	"github.com/dunkelstern/libxhyve"
 )
 
