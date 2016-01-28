@@ -19,7 +19,7 @@ func StartVM(config Config) chan error {
 			"-l", "com1,autopty",
 			"-s", "31,lpc",
 			"-s", "2:0,virtio-net",
-			"-s", fmt.Sprintf("4,virtio-blk,%s,size=%dG,split=1G,sparse", os.ExpandEnv("$HOME/.dlite/disk.img"), config.DiskSize),
+			"-s", fmt.Sprintf("4,virtio-blk,%s,sectorsize=4096,size=%dG,split=1G,sparse", os.ExpandEnv("$HOME/.dlite/disk.img"), config.DiskSize),
 			"-U", config.Uuid,
 			"-f", fmt.Sprintf("kexec,%s,%s,%s", os.ExpandEnv("$HOME/.dlite/bzImage"), os.ExpandEnv("$HOME/.dlite/rootfs.cpio.xz"), "console=ttyS0 hostname=dlite uuid="+config.Uuid),
 		}
