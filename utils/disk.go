@@ -4,10 +4,13 @@ import (
 	"archive/tar"
 	"bytes"
 	"io/ioutil"
+	"encoding/binary"
 	"os"
 	"os/user"
 	"strconv"
 	"strings"
+	"fmt"
+	"github.com/dunkelstern/libxhyve"
 )
 
 func changePermissions(path string) error {
@@ -53,7 +56,7 @@ func RemoveDir() error {
 	return os.RemoveAll(path)
 }
 
-func CreateDisk(sshKey string) error {
+func CreateDisk(sshKey string, size int) error {
 	if strings.Contains(sshKey, "$HOME") {
 		username := os.Getenv("SUDO_USER")
 		if username == "" {
@@ -68,6 +71,7 @@ func CreateDisk(sshKey string) error {
 		sshKey = strings.Replace(sshKey, "$HOME", me.HomeDir, -1)
 	}
 
+	// fetch ssh key and initialize tar file for setup mechanism
 	sshKey = os.ExpandEnv(sshKey)
 	keyBytes, err := ioutil.ReadFile(sshKey)
 	if err != nil {
@@ -100,6 +104,46 @@ func CreateDisk(sshKey string) error {
 
 	if err = tarball.Close(); err != nil {
 		return err
+	}
+
+	// initialize disk
+	diskConfig := fmt.Sprintf("%s,sectorsize=4096,size=%dG,split=1G,sparse,reset", os.ExpandEnv("$HOME/.dlite/disk.img"), size)
+	xhyve.InitDisk(diskConfig)
+
+	// write tar file to first disk image
+	path := os.ExpandEnv("$HOME/.dlite/disk.img.0000")
+	f, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+
+	defer f.Close()
+	_, err = f.Write(buffer.Bytes())
+	if err != nil {
+		return err
+	}
+
+	// fill to next sector boundary
+	for i := 0; i < (4096 - (len(buffer.Bytes()) % 4096)); i++ {
+		err := binary.Write(f, binary.LittleEndian, int8(0))
+		if err != nil {
+			return err
+		}
+	}
+
+	// update disk lut
+	path = os.ExpandEnv("$HOME/.dlite/disk.img.lut")
+	f, err = os.OpenFile(path, os.O_RDWR, 0666)
+	if err != nil {
+		return err
+	}
+
+	defer f.Close()
+	for i := 0; i < len(buffer.Bytes()); i+= 4096 {
+		err := binary.Write(f, binary.LittleEndian, int32(i / 4096))
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

@@ -23,7 +23,7 @@ func (c *InstallCommand) Execute(args []string) error {
 
 	fmap := utils.FunctionMap{}
 	fmap["Building disk image"] = func() error {
-		return utils.CreateDisk(c.SSHKey)
+		return utils.CreateDisk(c.SSHKey, c.Disk)
 	}
 
 	fmap["Downloading OS"] = func() error {
