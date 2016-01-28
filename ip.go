@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/nlf/dlite/utils"
+	"github.com/dunkelstern/dlite/utils"
 )
 
 type IPCommand struct{}

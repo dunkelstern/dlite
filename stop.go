@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/nlf/dlite/utils"
+	"github.com/dunkelstern/dlite/utils"
 )
 
 type StopCommand struct{}
